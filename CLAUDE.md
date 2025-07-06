@@ -17,7 +17,6 @@
 ### 認証
 サーバーは以下の方法で渡されるCastMake API KeyとChannel IDを必要とします：
 - コマンドライン: `--api-key` または `-k` フラグ、`--channel-id` または `-c` フラグ
-- 環境変数: `CASTMAKE_API_KEY`、`CASTMAKE_CHANNEL_ID`
 
 ### コアコンポーネント
 
