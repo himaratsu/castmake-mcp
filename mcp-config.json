@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "castmake": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "castmake-mcp",
+        "--channel-id",
+        "YOUR_CHANNEL_ID",
+        "--api-key",
+        "YOUR_API_KEY"
+      ]
+    }
+  }
+}
