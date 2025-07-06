@@ -1,10 +1,15 @@
-# CastMake MCP Server (Node.js/TypeScript)
+# castmake MCP Server
 
-## What's CastMake?
+## castmakeとは？
 
-CastMakeは、URLまたはテキストから高品質なポッドキャストエピソードを自動生成するAIサービスです。LLMから利用するには、このMCPサーバーを使用してください。
+castmakeはAIラジオを簡単に作れるツールです。
+自分向けのPodcast番組をつくって毎朝ニュースをラジオにしたり、企業の運営しているメディアの音声版を簡単に作ったりできます。
 
-## How to use in MCP Client
+## MCP設定
+
+### npmを使って設定する
+
+以下の設定をCursorやClaudeなどのお使いのサービスに追記してください。
 
 ```json
 {
@@ -24,7 +29,7 @@ CastMakeは、URLまたはテキストから高品質なポッドキャストエ
 }
 ```
 
-API KeyとChannel IDは、CastMakeのダッシュボードで取得できます。
+API KeyとChannel IDは、castmakeのダッシュボードで取得できます。
 
 ## 利用可能なツール
 
