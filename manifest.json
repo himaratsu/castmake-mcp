@@ -1,0 +1,57 @@
+{
+  "name": "castmake-mcp",
+  "version": "0.1.0",
+  "description": "castmake MCP Server for podcast episode creation",
+  "dxt_version": "0.1.0",
+  "license": "MIT",
+  "keywords": ["castmake", "podcast", "mcp", "ai", "radio"],
+  "homepage": "https://github.com/himaratsu/castmake-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/himaratsu/castmake-mcp.git"
+  },
+  "author": {
+    "name": "himaratsu",
+    "url": "https://github.com/himaratsu"
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/dist/index.js"
+      ],
+      "env": {
+        "CASTMAKE_CHANNEL_ID": "${user_config.CASTMAKE_CHANNEL_ID}",
+        "CASTMAKE_API_KEY": "${user_config.CASTMAKE_API_KEY}"
+      }
+    }
+  },
+  "user_config": {
+    "CASTMAKE_CHANNEL_ID": {
+      "type": "string",
+      "title": "チャンネルID",
+      "description": "対象チャンネルのID。ダッシュボードから確認できます",
+      "required": true,
+      "sensitive": false
+    },
+    "CASTMAKE_API_KEY": {
+      "type": "string",
+      "title": "APIキー",
+      "description": "castmakeのダッシュボードで発行するAPIキーです",
+      "required": true,
+      "sensitive": true
+    }
+  },
+  "tools": [
+    {
+      "name": "create_single_episode",
+      "description": "Create a single-voice podcast episode with specified topic and voice settings"
+    },
+    {
+      "name": "create_conversation_episode",
+      "description": "Create a conversation-style podcast episode between two voices"
+    }
+  ]
+}

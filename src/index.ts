@@ -35,14 +35,19 @@ function parseArguments(): { apiKey: string, channelId: string } {
     return { apiKey, channelId };
 }
 
-const { apiKey: CASTMAKE_API_KEY, channelId: CASTMAKE_CHANNEL_ID } = parseArguments();
+const { apiKey: cmdApiKey, channelId: cmdChannelId } = parseArguments();
+
+// 環境変数とコマンドライン引数の両方をサポート（コマンドライン引数が優先）
+const CASTMAKE_API_KEY = cmdApiKey || process.env.CASTMAKE_API_KEY || "";
+const CASTMAKE_CHANNEL_ID = cmdChannelId || process.env.CASTMAKE_CHANNEL_ID || "";
 
 // API Key と Channel ID が設定されていない場合はエラーを出力して終了
 if (!CASTMAKE_API_KEY || !CASTMAKE_CHANNEL_ID) {
     console.error("エラー: CASTMAKE_CHANNEL_ID と CASTMAKE_API_KEY が設定されていません。");
     console.error("使用方法:");
-    console.error("  npx castmake-mcp --channel-id YOUR_CHANNEL_ID --api-key YOUR_API_KEY");
-    console.error("  npx castmake-mcp -c YOUR_CHANNEL_ID -k YOUR_API_KEY");
+    console.error("  コマンドライン引数での設定:");
+    console.error("    npx castmake-mcp --channel-id YOUR_CHANNEL_ID --api-key YOUR_API_KEY");
+    console.error("    npx castmake-mcp -c YOUR_CHANNEL_ID -k YOUR_API_KEY");
     process.exit(1);
 }
 

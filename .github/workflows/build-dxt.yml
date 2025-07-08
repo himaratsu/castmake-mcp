@@ -1,0 +1,73 @@
+name: Build Desktop Extension (DXT)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build project
+        run: npm run build
+        
+      - name: Install DXT CLI
+        run: npm install -g @dexterapp/dxt
+        
+      - name: Create DXT package
+        run: |
+          dxt pack --name castmake-mcp --version ${{ github.ref_name }} --command "npx castmake-mcp"
+          
+      - name: Rename DXT with version
+        run: |
+          if [ -f castmake-mcp.dxt ]; then
+            mv castmake-mcp.dxt castmake-mcp-${{ github.ref_name }}.dxt
+          fi
+          
+      - name: Verify DXT creation
+        run: |
+          if [ -f castmake-mcp-${{ github.ref_name }}.dxt ]; then
+            echo "DXT file created successfully"
+            ls -la castmake-mcp-${{ github.ref_name }}.dxt
+          else
+            echo "DXT file not found"
+            exit 1
+          fi
+          
+      - name: Upload DXT as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: castmake-mcp-dxt
+          path: castmake-mcp-*.dxt
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download DXT artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: castmake-mcp-dxt
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: castmake-mcp-*.dxt
+          generate_release_notes: true
+          name: Release ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
