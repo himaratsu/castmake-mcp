@@ -7,9 +7,18 @@ castmakeはAIラジオを簡単に作れるツールです。
 
 ## MCP設定
 
-### npmを使って設定する
+### 方法1: Desktop Extension (DXT) をつかう
 
-以下の設定をCursorやClaudeなどのお使いのサービスに追記してください。
+Claude Desktopに導入する場合、dxtファイルを使って簡単にインストールできます。
+
+1. リリースページ から最新の `castmake-mcp.dxt` をダウンロード
+2. Claude Desktopを起動し、設定 > エクステンション を開く
+3. ダウンロードしたdxtファイルをClaude Desktopにドラッグ＆ドロップ
+4. チャンネルIDとAPIキーを設定する
+
+### 方法2. npmを使って設定する
+
+以下の設定をCursorなどのお使いのサービスに追記してください。
 
 ```json
 {
