@@ -25,49 +25,58 @@ jobs:
         run: npm run build
         
       - name: Install DXT CLI
-        run: npm install -g @dexterapp/dxt
-        
+        run: npm install -g @anthropic-ai/dxt
+            
       - name: Create DXT package
-        run: |
-          dxt pack --name castmake-mcp --version ${{ github.ref_name }} --command "npx castmake-mcp"
-          
-      - name: Rename DXT with version
-        run: |
-          if [ -f castmake-mcp.dxt ]; then
-            mv castmake-mcp.dxt castmake-mcp-${{ github.ref_name }}.dxt
-          fi
+          run: |
+            # Get version from manifest.json
+            VERSION=$(node -p "require('./manifest.json').version")
+            echo "Building DXT for version: $VERSION"
+            
+            # Create DXT directly in project root (dxt pack includes dependencies)
+            npx @anthropic-ai/dxt pack
+            
+            # Rename to include version
+            mv castmake-mcp.dxt castmake-mcp-v${VERSION}.dxt
+            
+            # Also create a copy without version for consistency
+            cp castmake-mcp-v${VERSION}.dxt castmake-mcp.dxt
           
       - name: Verify DXT creation
         run: |
-          if [ -f castmake-mcp-${{ github.ref_name }}.dxt ]; then
-            echo "DXT file created successfully"
-            ls -la castmake-mcp-${{ github.ref_name }}.dxt
-          else
-            echo "DXT file not found"
+          if [ ! -f castmake-mcp.dxt ]; then
+            echo "Error: DXT file not created"
             exit 1
           fi
+          ls -la *.dxt
           
       - name: Upload DXT as artifact
         uses: actions/upload-artifact@v4
         with:
           name: castmake-mcp-dxt
-          path: castmake-mcp-*.dxt
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
+          path: |
+            castmake-mcp.dxt
+            castmake-mcp-v*.dxt
+          
+    release:
+      needs: build
+      runs-on: ubuntu-latest
+      if: startsWith(github.ref, 'refs/tags/')
+      
+      steps:
       - name: Download DXT artifact
         uses: actions/download-artifact@v4
         with:
           name: castmake-mcp-dxt
           
+      - name: List downloaded files
+        run: ls -la
+          
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: castmake-mcp-*.dxt
+          files: |
+            castmake-mcp.dxt
+            castmake-mcp-v*.dxt
           generate_release_notes: true
-          name: Release ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_unmatched_files: true
