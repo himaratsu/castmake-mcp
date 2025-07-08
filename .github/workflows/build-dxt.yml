@@ -28,19 +28,19 @@ jobs:
         run: npm install -g @anthropic-ai/dxt
             
       - name: Create DXT package
-          run: |
-            # Get version from manifest.json
-            VERSION=$(node -p "require('./manifest.json').version")
-            echo "Building DXT for version: $VERSION"
-            
-            # Create DXT directly in project root (dxt pack includes dependencies)
-            npx @anthropic-ai/dxt pack
-            
-            # Rename to include version
-            mv castmake-mcp.dxt castmake-mcp-v${VERSION}.dxt
-            
-            # Also create a copy without version for consistency
-            cp castmake-mcp-v${VERSION}.dxt castmake-mcp.dxt
+        run: |
+          # Get version from manifest.json
+          VERSION=$(node -p "require('./manifest.json').version")
+          echo "Building DXT for version: $VERSION"
+          
+          # Create DXT directly in project root (dxt pack includes dependencies)
+          npx @anthropic-ai/dxt pack
+          
+          # Rename to include version
+          mv castmake-mcp.dxt castmake-mcp-v${VERSION}.dxt
+          
+          # Also create a copy without version for consistency
+          cp castmake-mcp-v${VERSION}.dxt castmake-mcp.dxt
           
       - name: Verify DXT creation
         run: |
