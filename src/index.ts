@@ -90,15 +90,26 @@ async function makeCastMakeRequest(endpoint: string, body: Record<string, any>):
 // Tools
 server.tool(
     "create_single_episode",
-    "1人語りのエピソードを作成します。指定されたURLから記事を取得し、音声エピソードを生成します。",
+    "1人語りのエピソードを作成します。指定されたURLまたはテキストから記事を取得し、音声エピソードを生成します。",
     {
-        urls: z.array(z.string().url()).describe("記事のURL配列。複数のURLを指定できます。")
+        urls: z.array(z.string().url()).describe("記事のURL配列。複数のURLを指定できます。").optional(),
+        texts: z.array(z.string()).describe("記事のテキスト配列。複数のテキストを指定できます。").optional()
     },
-    async ({ urls }) => {
-        const data = await makeCastMakeRequest("/episodes", {
+    async ({ urls, texts }) => {
+        // リクエストボディを動的に組み立てる
+        const requestBody: Record<string, any> = {
             channelId: CASTMAKE_CHANNEL_ID,
-            urls: urls
-        });
+        };
+
+        if (urls && urls.length > 0) {
+            requestBody.urls = urls;
+        }
+
+        if (texts && texts.length > 0) {
+            requestBody.texts = texts;
+        }
+
+        const data = await makeCastMakeRequest("/episodes", requestBody);
         
         if (typeof data === "string") {
             return {
